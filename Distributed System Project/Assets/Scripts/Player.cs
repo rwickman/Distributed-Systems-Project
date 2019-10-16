@@ -7,7 +7,11 @@ public class Player : MonoBehaviour
 
     public float speed = 2f;
 
+
+    public bool isMoveable = true;
+
     private Rigidbody rigidbody;
+    private GameObject sword;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +23,7 @@ public class Player : MonoBehaviour
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-        if (h != 0 || v != 0) {
+        if ((h != 0 || v != 0) && isMoveable) {
             Move(h, v);
         }
     }
