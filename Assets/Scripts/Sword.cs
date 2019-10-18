@@ -32,10 +32,10 @@ public class Sword : MonoBehaviour
             m_coll.isTrigger = true;
             
         }
-
+        /* 
         if (m_coll.isTrigger && animElapsedTime > hitAnimTime) {
             m_coll.isTrigger = false;
-        }
+        }*/
     }
 
     private void OnTriggerEnter(Collider other) {

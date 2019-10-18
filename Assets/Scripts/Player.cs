@@ -29,9 +29,7 @@ public class Player : MonoBehaviour
     }
 
     void Move(float horizontalMove, float verticalMove) {
-        //
-        //rigidbody.AddForce(speed * horizontalMove.normalized * Time.deltaTime, speed * verticalMove.normalized * Time.deltaTime);
+        //rigidbody.AddForce(new Vector3(horizontalMove, 0f ,verticalMove).normalized * speed * Time.deltaTime);
         rigidbody.AddForce(new Vector3(horizontalMove, 0f ,verticalMove).normalized * speed * Time.deltaTime);
-        //transform.Translate(new Vector3(horizontalMove, 0f ,verticalMove).normalized * speed * Time.deltaTime);
     }
 }
