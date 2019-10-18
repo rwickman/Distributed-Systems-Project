@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -559,9 +559,10 @@ MonoBehaviour:
   hand: {fileID: 74187350}
   speedH: 2
   speedV: 2
-  handZOffset: 0.55
+  handZOffset: 0.4
   handViewportPosX: 0.88
   handViewportPosY: -0.08
+  camFollowPlayerLerpTerm: 20.48
 --- !u!1 &990593204
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,7 +640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 10
-  deathTime: 2
+  deathTime: 0.1
 --- !u!136 &1489073136
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -823,6 +824,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2087227905 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6550420331154676276, guid: f5a62037b5d30f843a00528dbe2d7a19,
+    type: 3}
+  m_PrefabInstance: {fileID: 6550420331081013350}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2087227908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087227905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6b2290818ebb794abeca317659c731d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handZOffset: 0.4
+  handViewportPosX: 0.88
+  handViewportPosY: -0.08
 --- !u!1001 &6550420331081013350
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -933,7 +955,12 @@ PrefabInstance:
     - target: {fileID: 6550420331066684804, guid: f5a62037b5d30f843a00528dbe2d7a19,
         type: 3}
       propertyPath: stoppingLerpTerm
-      value: 0.2
+      value: 6.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6550420331066684804, guid: f5a62037b5d30f843a00528dbe2d7a19,
+        type: 3}
+      propertyPath: dirMoveFactor
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6550420331154676277, guid: f5a62037b5d30f843a00528dbe2d7a19, type: 3}

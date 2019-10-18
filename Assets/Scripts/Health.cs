@@ -8,7 +8,7 @@ public class Health : MonoBehaviour
     
     public int health = 10;
     //public Player player;
-    public float deathTime = 2f;
+    public float deathTime = 0.1f;
     
     public void Hurt(int hitPoints) {
         health -= hitPoints;

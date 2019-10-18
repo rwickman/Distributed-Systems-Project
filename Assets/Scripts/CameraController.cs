@@ -16,6 +16,7 @@ public class CameraController : MonoBehaviour
     public float handZOffset = 0.4f;
     public float handViewportPosX = 0.88f;
     public float handViewportPosY = -0.08f;
+    public float camFollowPlayerLerpTerm = 6.4f;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,25 +27,14 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = player.transform.position + offset;
+        //print(camFollowPlayerLerpTerm * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, player.transform.position + offset, camFollowPlayerLerpTerm * Time.deltaTime);
 
-        //print("pos: " + Input.mousePosition.y);
-        //print("INPUT: " + Input.GetAxis("Mouse Y"));
         yaw += speedH * Input.GetAxis("Mouse X");
-        pitch -= speedV * Input.GetAxis("Mouse Y");
-
-       // yaw = Mathf.Clamp(yaw, -90f, 90f);
+        pitch -= speedV * Input.GetAxis("Mouse Y");       
         //the rotation range
         pitch = Mathf.Clamp(pitch, -60f, 55f);
-        //the rotation range
 
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
-        //print( m_cam.ViewportToWorldPoint(new Vector3(0.95f, 0.1f, 0.0f)));
-        Vector3 updatedHandPos = m_cam.ViewportToWorldPoint(new Vector3(handViewportPosX, handViewportPosY, m_cam.nearClipPlane + handZOffset));
-      
-        hand.position = updatedHandPos; 
-        hand.eulerAngles = new Vector3(pitch, yaw, 0.0f);
-        //player.transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
-        //transform.LookAt(m_cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, m_cam.nearClipPlane)), Vector3.up);
     }
 }

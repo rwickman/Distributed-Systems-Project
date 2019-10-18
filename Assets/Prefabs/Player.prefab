@@ -76,8 +76,8 @@ GameObject:
   - component: {fileID: 6550420331066684803}
   - component: {fileID: 6550420331066684802}
   - component: {fileID: 6550420331066684805}
-  - component: {fileID: 6550420331066684804}
   - component: {fileID: 6550420331066684807}
+  - component: {fileID: 6550420331066684804}
   - component: {fileID: 6550420331066684801}
   m_Layer: 0
   m_Name: Player
@@ -162,20 +162,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6550420331066684804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6550420331066684806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2ba2a89a4b60ed4b98c19e3c0624dbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 500
-  isMoveable: 1
 --- !u!54 &6550420331066684807
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -192,6 +178,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &6550420331066684804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6550420331066684806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ba2a89a4b60ed4b98c19e3c0624dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 500
+  isMoveable: 1
+  maxSpeed: 5
+  stoppingLerpTerm: 0.01
+  dirMoveFactor: 1
 --- !u!114 &6550420331066684801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,21 +441,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
-        type: 3}
-      propertyPath: m_Animations.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
-        type: 3}
-      propertyPath: m_Animations.Array.data[0]
-      value: 
-      objectReference: {fileID: 7400000, guid: b5f69948c3ee70e4f9b8113fc738852a, type: 2}
-    - target: {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
-        type: 3}
-      propertyPath: m_Animation
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -522,6 +510,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.x
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
+        type: 3}
+      propertyPath: m_Animations.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
+        type: 3}
+      propertyPath: m_Animations.Array.data[0]
+      value: 
+      objectReference: {fileID: 7400000, guid: b5f69948c3ee70e4f9b8113fc738852a, type: 2}
+    - target: {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5,
+        type: 3}
+      propertyPath: m_Animation
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: -5716681864270162303, guid: dd0682cd55d7f8342b8026ebb1cfc4a5, type: 3}

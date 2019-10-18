@@ -8,8 +8,8 @@ public class Player : MonoBehaviour
     public float speed = 500f;
     public bool isMoveable = true;
     public float maxSpeed = 5;
-    public float stoppingLerpTerm = 0.8f;
-    public float dirMoveFactor = 0.8f;
+    public float stoppingLerpTerm = 0.01f;
+    public float dirMoveFactor = 1f;
 
     private float minVelocityMag = 0.005f;
     private Rigidbody rigidbody;
@@ -29,16 +29,13 @@ public class Player : MonoBehaviour
             Move(h, v);
         } else if (rigidbody.velocity.magnitude > minVelocityMag)
         {
-            rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, Vector3.zero, stoppingLerpTerm);
+            rigidbody.velocity = Vector3.Slerp(rigidbody.velocity, Vector3.zero, stoppingLerpTerm * Time.deltaTime);
         }
         transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, Camera.main.transform.localEulerAngles.y, transform.localEulerAngles.z);
         rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, maxSpeed);
-        print(rigidbody.velocity.magnitude);
     }
 
     void Move(float horizontalMove, float verticalMove) {
-        //rigidbody.AddForce(new Vector3(horizontalMove, 0f ,verticalMove).normalized * speed * Time.deltaTime);
-        //Vector3 moveDir = Camera.main.transform.TransformDirection(new Vector3(horizontalMove, 0f, verticalMove));
         rigidbody.AddRelativeForce(new Vector3(horizontalMove * dirMoveFactor, 0f, verticalMove * dirMoveFactor).normalized * speed * Time.deltaTime);
     }
 }
