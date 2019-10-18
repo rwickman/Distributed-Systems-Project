@@ -5,7 +5,6 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public GameObject player;
-    public Transform hand;
 
     private Vector3 offset;
     private Camera m_cam;
@@ -13,9 +12,6 @@ public class CameraController : MonoBehaviour
     private float pitch = 0.0f;
     public float speedH = 2.0f;
     public float speedV = 2.0f;
-    public float handZOffset = 0.4f;
-    public float handViewportPosX = 0.88f;
-    public float handViewportPosY = -0.08f;
     public float camFollowPlayerLerpTerm = 6.4f;
     // Start is called before the first frame update
     void Start()

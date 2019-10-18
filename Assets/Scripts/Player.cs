@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
+        //bool isJumping = Input.GetKeyDown(KeyCode.Space)
         if ((h != 0 || v != 0) && isMoveable) {
             Move(h, v);
         } else if (rigidbody.velocity.magnitude > minVelocityMag)
