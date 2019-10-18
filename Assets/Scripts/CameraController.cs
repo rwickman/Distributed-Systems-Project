@@ -27,6 +27,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         transform.position = player.transform.position + offset;
+
         //print("pos: " + Input.mousePosition.y);
         //print("INPUT: " + Input.GetAxis("Mouse Y"));
         yaw += speedH * Input.GetAxis("Mouse X");
@@ -40,7 +41,7 @@ public class CameraController : MonoBehaviour
         transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
         //print( m_cam.ViewportToWorldPoint(new Vector3(0.95f, 0.1f, 0.0f)));
         Vector3 updatedHandPos = m_cam.ViewportToWorldPoint(new Vector3(handViewportPosX, handViewportPosY, m_cam.nearClipPlane + handZOffset));
-        
+      
         hand.position = updatedHandPos; 
         hand.eulerAngles = new Vector3(pitch, yaw, 0.0f);
         //player.transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);

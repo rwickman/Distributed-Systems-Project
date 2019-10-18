@@ -32,16 +32,16 @@ public class Sword : MonoBehaviour
             m_coll.isTrigger = true;
             
         }
-        /* 
+         
         if (m_coll.isTrigger && animElapsedTime > hitAnimTime) {
             m_coll.isTrigger = false;
-        }*/
+        }
     }
 
     private void OnTriggerEnter(Collider other) {
          print("TRIGGERING");
         Health otherHealth = other.gameObject.GetComponent<Health>();
-        if(otherHealth != null && animElapsedTime < hitAnimTime) {
+        if(otherHealth != null && animElapsedTime < hitAnimTime && !GameObject.ReferenceEquals(gameObject, other.gameObject)) {
             Vector3 dir = other.transform.position - transform.position;
             Rigidbody otherRb = other.gameObject.GetComponent<Rigidbody>(); 
             otherRb.AddForce(dir.normalized * hitForce,  ForceMode.Impulse);
