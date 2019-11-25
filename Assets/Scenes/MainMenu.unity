@@ -658,7 +658,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 355898932}
-        m_MethodName: Connect
+        m_MethodName: StartClient
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1147,7 +1147,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 950299147}
-        m_MethodName: Connect
+        m_MethodName: StartClient
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
