@@ -18,6 +18,7 @@ namespace Matchmaking
             public Socket workSocket = null;
             // Size of receive buffer.  
             public const int MaxBufferSize = 512;
+            public int gameType;
             // Receive buffer.  
             public byte[] buffer;
         }
@@ -28,19 +29,15 @@ namespace Matchmaking
         private const int port = 12001;
         //private const string hostName = "localhost";
         private const int headerLength = 8;
-        private Packet recvPacket;
 
-
-
-        // ManualResetEvent instances signal completion.  
-        private ManualResetEvent connectDone = new ManualResetEvent(false);
-        private ManualResetEvent sendDone = new ManualResetEvent(false);
-        private ManualResetEvent receiveDone = new ManualResetEvent(false);
+        private int findGameType;
 
         public void StartClient(int gameType)
         {
             try
             {
+                findGameType = gameType;
+
                 // Establish the remote endpoint for the socket.
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -53,40 +50,6 @@ namespace Matchmaking
                 // Connect to the remote endpoint.  
                 client.BeginConnect(remoteEP,
                     new AsyncCallback(ConnectCallback), client);
-                connectDone.WaitOne();
-
-
-                Debug.Log("Sending FindGame Packet");
-                // Create FindGamePacket
-                FindGamePacket findGamePacket = new FindGamePacket();
-                findGamePacket.userID = userID;//SystemInfo.deviceUniqueIdentifier;
-                findGamePacket.gameType = gameType;
-                string findGameStr = JsonUtility.ToJson(findGamePacket);
-
-                Send(client, findGameStr);
-                sendDone.WaitOne();
-
-                ReceiveHostOrJoin(client);
-                receiveDone.WaitOne();
-
-                if (recvPacket.packetType == 2)
-                {
-                    Debug.Log("Joining: " + recvPacket.IP + ":" + recvPacket.PID);
-                }
-                else if (recvPacket.packetType == 3)
-                {
-                    JoinPacket joinPacket = new JoinPacket();
-                    joinPacket.PID = hostPort;
-                    Debug.Log("IP: " + GetLocalIPAddress());
-                    joinPacket.IP = GetLocalIPAddress();
-                    string joinPacketStr = JsonUtility.ToJson(joinPacket);
-                    Send(client, joinPacketStr);
-                }
-                else
-                {
-                    throw new System.InvalidOperationException("Invalid Packet Type!");
-                }
-
             }
             catch (Exception e)
             {
@@ -102,13 +65,8 @@ namespace Matchmaking
                 // Retrieve the socket from the state object.  
                 Socket client = (Socket)ar.AsyncState;
 
-                // Complete the connection.  
-                client.EndConnect(ar);
-
                 Debug.Log("Socket connected to " + client.RemoteEndPoint.ToString());
-
-                // Signal that the connection has been made.  
-                connectDone.Set();
+                SendFindGame(client); 
             }
             catch (Exception e)
             {
@@ -116,18 +74,32 @@ namespace Matchmaking
             }
         }
 
-        private void Send(Socket client, string data)
+        private void SendFindGame(Socket client)
         {
-            // Create byte array to send to Matchmaking server
-            byte[] byteData = new byte[headerLength + Encoding.ASCII.GetByteCount(data)];
-            Encoding.ASCII.GetBytes(data.Length.ToString()).CopyTo(byteData, 0);
-            Encoding.ASCII.GetBytes(data).CopyTo(byteData, headerLength);
+            try
+            {
+                Debug.Log("Sending FindGame Packet");
+                // Create FindGamePacket
+                FindGamePacket findGamePacket = new FindGamePacket();
+                findGamePacket.userID = userID;//SystemInfo.deviceUniqueIdentifier;
+                findGamePacket.gameType = findGameType;
+                string findGameStr = JsonUtility.ToJson(findGamePacket);
 
-            // Begin sending the body size  
-            client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), client);
+                // Create byte array to send to Matchmaking server
+                byte[] byteData = new byte[headerLength + Encoding.ASCII.GetByteCount(findGameStr)];
+                Encoding.ASCII.GetBytes(findGameStr.Length.ToString()).CopyTo(byteData, 0);
+                Encoding.ASCII.GetBytes(findGameStr).CopyTo(byteData, headerLength);
+                client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendFindGameCallback), client);
+
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e.ToString());
+            }
+
         }
 
-        private void SendCallback(IAsyncResult ar)
+        private void SendFindGameCallback(IAsyncResult ar)
         {
             try
             {
@@ -137,15 +109,16 @@ namespace Matchmaking
                 // Complete sending the data to the remote device.  
                 int bytesSent = client.EndSend(ar);
                 Debug.Log("Sent " + bytesSent + " bytes to server.");
+                ReceiveHostOrJoin(client);
 
-                // Signal that all bytes have been sent.  
-                sendDone.Set();
             }
             catch (Exception e)
             {
                 Debug.LogError(e.ToString());
             }
         }
+
+
 
         private void ReceiveHostOrJoin(Socket client)
         {
@@ -158,7 +131,7 @@ namespace Matchmaking
 
                 // Begin receiving the header or the packet from the matchmaking server 
                 client.BeginReceive(state.buffer, 0, headerLength, 0,
-                    new AsyncCallback(ReceiveHostOrJoinCallback), state);
+                    new AsyncCallback(ReceiveHostOrJoinBody), state);
             }
             catch (Exception e)
             {
@@ -171,6 +144,10 @@ namespace Matchmaking
             try
             {
                 StateObject state = (StateObject)ar.AsyncState;
+
+                // End previous receive
+                state.workSocket.EndReceive(ar);
+
                 int packetLength = int.Parse(Encoding.ASCII.GetString(state.buffer));
                 state.buffer = new byte[StateObject.MaxBufferSize];
 
@@ -196,10 +173,62 @@ namespace Matchmaking
 
                 string recvPacketStr = Encoding.ASCII.GetString(state.buffer);
                 Packet recvPacket = JsonUtility.FromJson<Packet>(recvPacketStr);
+                Debug.Log(recvPacket.packetType);
+                if (recvPacket.packetType == 2)
+                {
+                    Debug.Log("Joining: " + recvPacket.IP + ":" + recvPacket.PID);
+                }
+                else if (recvPacket.packetType == 3)
+                {
 
-                // Signal that all bytes have been received.  
-                receiveDone.Set();
+                    SendJoin(client);
+                }
+                else
+                {
+                    Debug.Log("USERID: " + userID);
+                    throw new System.InvalidOperationException("Invalid Packet Type!");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.ToString());
+            }
+        }
 
+        private void SendJoin(Socket client)
+        {
+            try
+            {
+                JoinPacket joinPacket = new JoinPacket();
+                joinPacket.PID = hostPort;
+                Debug.Log("IP: " + GetLocalIPAddress());
+                joinPacket.IP = GetLocalIPAddress();
+                string joinPacketStr = JsonUtility.ToJson(joinPacket);
+
+                // Create byte array to send to Matchmaking server
+                byte[] byteData = new byte[headerLength + Encoding.ASCII.GetByteCount(joinPacketStr)];
+                Encoding.ASCII.GetBytes(joinPacketStr.Length.ToString()).CopyTo(byteData, 0);
+                Encoding.ASCII.GetBytes(joinPacketStr).CopyTo(byteData, headerLength);
+                client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendJoinCallback), client);
+
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.ToString());
+            }
+
+        }
+
+        private void SendJoinCallback(IAsyncResult ar)
+        {
+            try
+            {
+                // Retrieve the socket from the state object.  
+                Socket client = (Socket)ar.AsyncState;
+
+                // Complete sending the data to the remote device.  
+                int bytesSent = client.EndSend(ar);
+                Debug.Log("Sent " + bytesSent + " bytes to server.");
 
             }
             catch (Exception e)
